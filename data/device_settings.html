@@ -1,0 +1,176 @@
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>ESP8266 Home Automation</title>
+		<style>
+			body {font-family: Arial;}
+			
+				 
+			 h1, table {
+	 				font-family: Arial, Helvetica, sans-serif;
+	 			}
+	 			table {
+	 				font-size: 20;
+	 			}  
+			 input[type=text], input[type=password],[type=number] ,select{   
+					width: 100%;   
+					margin: 8px 0;  
+					padding: 12px 20px;   
+					display: inline-block;   
+					border: 2px solid gray;   
+					box-sizing: border-box;   
+				}  
+			 button:hover {   
+					opacity: 0.7;   
+				}   
+				
+				
+			button { 
+				width: 100%;  
+				color: white;
+				border: none;
+				font-style: bold;
+				font-weight: bold;
+				padding: 15px 32px;
+				text-align: center;
+				text-decoration: none;
+				display: inline-block;
+				font-size: 12px;
+				margin: 4px 2px;
+				cursor: pointer;
+				background-color: #2c3e50;
+				
+				
+			}
+		</style>
+	</head>
+	<body>
+		<center>
+			<h1>ESP8266 Home Automation</h1>
+			<table style="width:90%;">
+				<tr align="center">
+					<td colspan="2">
+						<h3>
+							Button Info for PIN# <span id="pin_num">XX</span>
+						</h3><hr/>
+					</td>
+				</tr>
+				<tr>
+					<td>Active: </td>
+					<td>
+						<select id="active">
+							<option value="0">Off</option>
+							<option value="1">On</option>
+					    </select>
+					</td>
+				</tr>
+				<tr>
+					<td>Name: </td>
+					<td>
+						<input type="text" value="" id="device_name"/ >
+					</td>
+				</tr>
+				<tr>
+					<td colspan=2>
+						<hr/>
+						<small id="mqtt_status">For MQTT use only</small>
+					</td>
+				</tr>
+				<tr>
+					<td>MQTT Topic: </td>
+					<td><input type="text" value="" id="mqtt_topic" /></td>
+				</tr>
+				<tr>
+					<td colspan="2">
+					<button id="update">Save</button>
+					</td>
+				</tr>
+
+				<tr>
+					<td colspan="2">
+					<button onclick="location.href='/buttons'">Back</button>
+					</td>
+				</tr>
+			</table>
+		</center>
+		
+		<center>
+		<hr/>
+		<small>
+			Created by: <span style="color:green;">Rommel Aquino Mendiola</span><br/>
+		</small>
+		</center>
+		<script src="/js/jquery.min.js"></script>
+		<script>
+			
+			var device_id = -1;
+			
+			function findGetParameter(parameterName) {
+				var result = null,
+					tmp = [];
+				location.search
+					.substr(1)
+					.split("&")
+					.forEach(function (item) {
+					  tmp = item.split("=");
+					  if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+					});
+				return result;
+			}
+		
+			$(document).ready(function(){
+			
+				$.post("/device_info",{
+					"id" : findGetParameter("id")
+				},function(data,status){
+					json = JSON.parse(data);
+					$("#pin_num").html(json.pin_num);
+					$("#device_name").val(json.device_name);
+					$("#mqtt_topic").val(json.mqtt_topic);
+					$("#active").val(json.active);
+					device_id = json.device_id;
+					if(json.mqtt_status=="0") {
+						$("#mqtt_status").html("Connected to MQTT Server");
+						$("#mqtt_status").css('color','green');
+					} else {
+						$("#mqtt_status").html("Disconnected to MQTT Server");
+						$("#mqtt_status").css('color','red');
+					}
+					
+				});
+				
+				$("#update").click(function(){
+				
+					if($("#device_name").val().length == 0) {
+						alert("Device Name Required");
+						return;
+					}
+							
+					
+					$("#update").prop("disabled",true);
+					$("#update").html("Please Wait . . . ");
+					$.post("/update_device",{
+						"device_name"		:	$("#device_name").val(),
+						"mqtt_topic"		:	$("#mqtt_topic").val(),
+						"active"	:	$("#active").val(),
+						"device_id"	:	device_id
+		
+					},function(data,status){
+						$("#update").prop("disabled",false);
+						$("#update").html("Save");
+						json = JSON.parse(data);	
+
+						if(json.result=="success") {
+							alert(json.text);
+							setTimeout(function(){
+								location.reload();
+							},1000);
+						} else {
+							alert(json.text);						
+						}
+					})
+				});
+			});
+		</script>
+		</body>
+</html>

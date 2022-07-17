@@ -1,0 +1,135 @@
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>ESP8266 Home Automation</title>
+		<style>
+			body {font-family: Arial;}
+			
+				 
+			 h1, table {
+	 				font-family: Arial, Helvetica, sans-serif;
+	 			}
+	 			table {
+	 				font-size: 20;
+	 			}  
+			 input[type=text], input[type=password] ,select{   
+					width: 100%;   
+					margin: 8px 0;  
+					padding: 12px 20px;   
+					display: inline-block;   
+					border: 2px solid gray;   
+					box-sizing: border-box;   
+				}  
+			 button:hover {   
+					opacity: 0.7;   
+				}   
+				
+				
+			button { 
+				width: 100%;  
+				color: white;
+				border: none;
+				font-style: bold;
+				font-weight: bold;
+				padding: 15px 32px;
+				text-align: center;
+				text-decoration: none;
+				display: inline-block;
+				font-size: 12px;
+				margin: 4px 2px;
+				cursor: pointer;
+				background-color: #2c3e50;
+				
+				
+			}
+		</style>
+	</head>
+	<body>
+		<center>
+			<h1>ESP8266 Home Automation</h1>
+			<table style="width:90%;">
+				<tr align="center">
+					<td colspan="2">
+						<h3>
+							Edit Buttons<br/>
+						</h3><hr/>
+						<small>Click the button you want to Edit</small>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+					<small id="loads">Please wait . . .</small>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+					<button id="dv1" onclick="device_load(0)" style="display:none;">LOBBY LIGHT</button>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+					<button id="dv2" onclick="device_load(1)" style="display:none;">LOBBY LIGHT</button>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+					<button id="dv3" onclick="device_load(2)" style="display:none;">LOBBY LIGHT</button>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+					<button id="dv4" onclick="device_load(3)" style="display:none;">LOBBY LIGHT</button>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+					<button id="dv5" onclick="device_load(4)" style="display:none;">LOBBY LIGHT</button>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+					<button id="dv6" onclick="device_load(5)" style="display:none;">LOBBY LIGHT</button>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+					<button onclick="location.href='/settings'">Back</button>
+					</td>
+				</tr>
+			</table>
+		</center>
+		
+		<center>
+		<hr/>
+		<small>
+			Created by: <span style="color:green;">Rommel Aquino Mendiola</span><br/>
+		</small>
+		</center>
+		<script src="/js/jquery.min.js"></script>
+		<script>
+			var selectHT = "<select id='ssid'>";
+				$(document).ready(function(){
+			
+					$.post("/devices_status",{
+						"function" : "scan_networks"
+					},function(data,status){
+						devices_data = JSON.parse(data);
+						$("#loads").css('display','none');
+						
+						for(i=0;i < 6 ;i++) {
+							$("#dv" + (i + 1)).css('display','block');
+							$("#dv" + (i + 1)).css('color',(devices_data[i][1] == 0 ? "#e74c3c" : "#2ecc71"));
+							$("#dv" + (i + 1)).html( devices_data[i][3] + " | " + (devices_data[i][1] == 0 ? "INACTIVE" : "ACTIVE"));
+							
+						}
+						
+					});
+			});
+			
+			function device_load(id){
+				location.href = "/device?id=" + id;
+			}
+		</script>
+
+	</body>
+</html>
