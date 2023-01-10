@@ -8,3 +8,6 @@ Features:
 4. Wifi Connection Setting
 5. Web Interface for Controlling Devices (On / Off)
 6. Configure Device Name
+
+Don`t know how to Compile ?
+Then flash instead: [Click Here](https://github.com/mendylivium/HomeAutomation-ESP8266)
