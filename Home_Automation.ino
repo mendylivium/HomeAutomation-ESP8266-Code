@@ -10,6 +10,12 @@
 #include <PubSubClient.h>
 #include <ArduinoOTA.h>
 
+/*****************
+* Created By: Rommel A. Mendiola
+* Home Automation using ESP8266 with Portal
+* Supports MQQT
+******************/
+
 String captivePortal_url = "mendy";
 
 
