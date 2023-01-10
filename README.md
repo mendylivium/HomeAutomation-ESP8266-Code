@@ -10,4 +10,4 @@ Features:
 6. Configure Device Name
 
 Don`t know how to Compile ?
-Then flash instead: [Click Here](https://github.com/mendylivium/HomeAutomation-ESP8266)
+Then flash instead: [Click Here](https://github.com/mendylivium/HomeAutomation-ESP8266-Firmware)
